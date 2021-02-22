@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/error_box/error_box.dart';
 import 'package:flutter_app/screens/signup_screen/signup_screen.dart';
+import 'package:flutter_app/stores/login_store.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    final LoginStore loginStore = LoginStore();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Entrar'),
@@ -32,6 +38,14 @@ class LoginScreen extends StatelessWidget {
                       color: Colors.grey[900]
                     ),
                   ),
+                  Observer(builder: (_){
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ErrorBox(
+                        message: loginStore.error,
+                      ),
+                    );
+                  }),
                   Padding(
                     padding: const EdgeInsets.only(left: 3, bottom: 4, top: 8),
                     child: Text(
@@ -43,13 +57,18 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  TextField(
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
+                  Observer(builder: (_) {
+                    return TextField(
+                      decoration: InputDecoration(
+                        errorText: loginStore.emailError,
+                        border: const OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                      enabled: !loginStore.loading,
+                      keyboardType: TextInputType.emailAddress,
+                      onChanged: loginStore.setEmail,
+                    );
+                  }),
                   const SizedBox(height: 16,),
                   Padding(
                     padding: const EdgeInsets.only(left: 3, bottom: 4, top: 8),
@@ -79,27 +98,35 @@ class LoginScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  TextField(
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                    obscureText: true,
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 20, bottom: 12),
-                    height: 40,
-                    child: RaisedButton(
-                      color: Colors.orange,
-                      child: Text('Entrar'),
-                      textColor: Colors.white,
-                      elevation: 0,
-                      onPressed: (){},
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)
+                  Observer(builder: (_) {
+                    return TextField(
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        isDense: true,
+                        errorText: loginStore.passwordError,
                       ),
-                    ),
-                  ),
+                      enabled: !loginStore.loading,
+                      obscureText: true,
+                      onChanged: loginStore.setPassword,
+                    );
+                  }),
+                  Observer(builder: (_) {
+                    return Container(
+                      margin: const EdgeInsets.only(top: 20, bottom: 12),
+                      height: 40,
+                      child: RaisedButton(
+                        disabledColor: Colors.orange.withAlpha(120),
+                        color: Colors.orange,
+                        child: loginStore.isLoading,
+                        textColor: Colors.white,
+                        elevation: 0,
+                        onPressed: loginStore.loginPressed,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)
+                        ),
+                      ),
+                    );
+                  }),
                   Divider(color: Colors.black,),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),

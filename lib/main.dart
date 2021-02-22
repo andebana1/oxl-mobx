@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/screens/base/base_screen.dart';
+import 'package:flutter_app/stores/category_store.dart';
 import 'package:flutter_app/stores/page_store.dart';
+import 'package:flutter_app/stores/user_manager_store.dart';
 import 'package:get_it/get_it.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
@@ -14,6 +16,8 @@ void main() async {
 
 void setUpLocators(){
   GetIt.I.registerSingleton(PageStore());
+  GetIt.I.registerSingleton(UserManagerStore());
+  GetIt.I.registerSingleton(CategoryStore());
 }
 
 Future<void> initializeParse() async {

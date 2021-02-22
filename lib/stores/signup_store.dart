@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/repositories/user_repository.dart';
+import 'package:flutter_app/stores/user_manager_store.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_app/helpers/extensions.dart';
 part 'signup_store.g.dart';
@@ -114,6 +116,7 @@ abstract class _SignUpStore with Store{
     );
     try{
       final resultUser = await UserRepository().signUp(user);
+      GetIt.I<UserManagerStore>().setUserManager(resultUser);
     }catch(e){
       error = e;
     }
